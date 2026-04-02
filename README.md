@@ -1,2 +1,6 @@
 # CS417_MP3
-Group Work Repo
+
+Contributors:
+Ramana Ramachandran
+Krishvardhan Gupta
+Aniketh Ganta
