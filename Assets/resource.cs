@@ -1,5 +1,9 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.XR;
+using System.Collections;
+using static UnityEngine.ParticleSystem;
+
 
 public class resource : MonoBehaviour
 {
@@ -48,6 +52,14 @@ public class resource : MonoBehaviour
     private float currentScale2 = 1f;
     private float targetScale2 = 1f;
 
+    // unlock juice
+    [Header("Unlock Juice")]
+    public AudioSource unlockAudioSource;
+    public AudioClip unlockSoundClip;
+    public ParticleSystem unlockBurstParticles;
+
+
+
     void Start()
     {
         baseScale = resourceText.transform.localScale;
@@ -64,6 +76,18 @@ public class resource : MonoBehaviour
         // Sound: play the clip spatialized at the resource text location
         if (rampingAudioSource != null && rampingSoundClip != null)
             rampingAudioSource.PlayOneShot(rampingSoundClip);
+    }
+
+    IEnumerator HapticUnlock()
+    {
+        for (int i = 0; i < 40; i++)
+        {
+            UnityEngine.XR.InputDevice rightHand = UnityEngine.XR.InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
+            UnityEngine.XR.InputDevice leftHand = UnityEngine.XR.InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
+            rightHand.SendHapticImpulse(0, 1.0f, 0.3f);
+            leftHand.SendHapticImpulse(0, 1.0f, 0.3f);
+            yield return new WaitForSeconds(0.15f);
+        }
     }
 
 
@@ -178,5 +202,12 @@ public class resource : MonoBehaviour
         updateCoins(-50f);
         unlocked2 = true;
         butt.SetActive(false);
+        if (unlockAudioSource != null && unlockSoundClip != null)
+            unlockAudioSource.PlayOneShot(unlockSoundClip);
+
+        StartCoroutine(HapticUnlock());
+        // Particles
+        if (unlockBurstParticles != null)
+            unlockBurstParticles.Play();
     }
 }
