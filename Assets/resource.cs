@@ -22,6 +22,16 @@ public class resource : MonoBehaviour
 
     public Transform roomRoot;
 
+    [Header("Resource Particles")]
+    [Tooltip("Particle system for Scrap resource growth")]
+    public ParticleSystem scrapParticles;
+
+    [Tooltip("Particle system for Joy resource growth")]
+    public ParticleSystem joyParticles;
+
+    [Tooltip("Multiplier to scale emission rate relative to resource rate")]
+    public float particleRateMultiplier = 5f;
+
     void Update()
     {
         // Euler integration
@@ -33,6 +43,11 @@ public class resource : MonoBehaviour
         if (unlocked2) {
             rsrc2Text.text = $"Joy: {FormatResource(rsrc2)} (+{FormatRate(rate2)}/s) \n Hint: Deploying more robots \n might bring you more Joy";
         }
+
+        // Update the scrap particle rate and joy particle rate
+        UpdateParticleRate(scrapParticles, rate);
+        UpdateParticleRate(joyParticles, unlocked2 ? rate2 : 0f);
+
 
         if (coins >= 10f && trophiesSpawned == 0)
         {
@@ -50,11 +65,19 @@ public class resource : MonoBehaviour
         }
     }
 
+    // Function to update particle system rate
+    void UpdateParticleRate(ParticleSystem ps, float resourceRate)
+    {
+        if (ps == null) return;
+        var emission = ps.emission;
+        emission.rateOverTime = resourceRate * particleRateMultiplier;
+    }
+
     void SpawnTrophy()
     {
         trophiesSpawned++;
         GameObject spawned = Instantiate(trophy, roomRoot);
-        spawned.transform.localPosition = new Vector3(-21f, 5.4f, 7.0f + ((trophiesSpawned - 1) * 4f));
+        spawned.transform.localPosition = new Vector3(-21f, 0.5f, 7.0f + ((trophiesSpawned - 1) * 4f));
         spawned.transform.localRotation = Quaternion.identity;
         Debug.Log("Built a trophy!: " + trophiesSpawned);
     }
