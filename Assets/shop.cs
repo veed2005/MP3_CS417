@@ -107,7 +107,17 @@ public class shop : MonoBehaviour
         if (generatorBurstParticles != null)
             generatorBurstParticles.Play();
     }
-
+    public void ResetShop()
+    {
+        ShopUI shopText = GetComponent<ShopUI>();
+        for (int i = 0; i < items.Length; i++)
+        {
+            items[i].count = 0;
+            items[i].rate = items[i].rate;
+            items[i].rate2 = items[i].rate2;
+            shopText.UpdateDisplay(i, items[i].costs[0], items[i].upgradeCost);
+        }
+    }
     public void UpgradeItem(int id)
     {
         ShopItem item = items[id];

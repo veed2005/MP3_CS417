@@ -74,6 +74,8 @@ public class resource : MonoBehaviour
     public AudioClip prestigeSoundClip;
     public SaveManager saveManager;
 
+    public shop shopManager;
+
     void Start()
     {
         baseScale = resourceText.transform.localScale;
@@ -100,6 +102,10 @@ public class resource : MonoBehaviour
         // Update prestige display
         if (prestigeText != null)
             prestigeText.text = "Prestige: " + prestigeLevel + " (x" + prestigeMultiplier.ToString("F2") + " bonus)";
+
+        // Reset the shop
+        if (shopManager != null)
+            shopManager.ResetShop();
 
         // Juice
         if (prestigeParticles != null)
